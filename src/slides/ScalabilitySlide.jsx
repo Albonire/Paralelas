@@ -5,40 +5,39 @@ import Reveal from '../components/Reveal';
 const ScalabilitySlide = ({ 'data-index': dataIndex }) => {
   return (
     <Slide className="slide-scalability" data-index={dataIndex} style={{ zIndex: 3 }}>
-      <Reveal as="h2" className="headline-large" style={{ textAlign: 'center' }}>Los Dos Caminos del Escalamiento Sistemático</Reveal>
-
-      <div className="columns" style={{ marginTop: '2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="col-main">
+      <div style={{ padding: '1rem', width: '100%', marginBottom: '2rem' }}>
+          <Reveal as="h2" className="headline-large" style={{ textAlign: 'center' }}>Los Dos Caminos del Escalamiento Sistemático</Reveal>
+      </div>
+      
+      <div className="columns" style={{ marginTop: '0', position: 'relative' }}>
+        <div className="col-main" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingRight: '1rem' }}>
           <Reveal className="technical-box" style={{ borderStyle: 'solid', borderWidth: '3px' }}>
             <h3 style={{ color: 'var(--accent)' }}>Escalamiento VERTICAL (Scale-Up)</h3>
-            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem', fontStyle: 'italic' }}>Comprar e instalar un servidor más grande y caro.</p>
-            <ul style={{ fontSize: '0.8rem', marginTop: '1rem', marginLeft: '1.2rem', lineHeight: 1.6 }}>
-              <li>Mejorar componentes (+ RAM, + Cores de CPU).</li>
-              <li>Llegarás rápidamente al límite térmico y económico de la física del silicio.</li>
-              <li>Punto único de fallo (SPoF): Si el servidor muere, todo el flujo cesa.</li>
-            </ul>
-          </Reveal>
-          <Reveal delay={0.2} className="technical-box" style={{ borderStyle: 'solid', borderWidth: '3px' }}>
-            <h3 style={{ color: 'var(--accent)' }}>Escalamiento HORIZONTAL (Scale-Out)</h3>
-            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem', fontStyle: 'italic' }}>Interconectar miles de servidores comerciales básicos.</p>
-            <ul style={{ fontSize: '0.8rem', marginTop: '1rem', marginLeft: '1.2rem', lineHeight: 1.6 }}>
-              <li>Unir nodos a través de protocolos estandarizados de red.</li>
-              <li>Alta disponibilidad garantizada: Si un equipo falla, hay mil más.</li>
-              <li>El software general debe ser fuertemente rediseñado para soportarlo.</li>
+            <p style={{ fontSize: '1rem', marginTop: '0.5rem', fontStyle: 'italic' }}>Aumento de capacidad en un nodo único.</p>
+            <ul style={{ fontSize: '0.95rem', marginTop: '1rem', marginLeft: '1.2rem', lineHeight: 1.6 }}>
+              <li>Mejora de componentes individuales (RAM, CPU, Almacenamiento).</li>
+              <li>Limitado intrínsecamente por las restricciones físicas y térmicas del silicio.</li>
+              <li>Genera un Punto Único de Fallo (SPoF).</li>
             </ul>
           </Reveal>
         </div>
 
-        <div className="col-side" style={{ display: 'flex', flexDirection: 'column' }}>
-          <Reveal style={{ border: '2px solid var(--ink)', padding: '1.5rem', background: 'rgba(0,0,0,0.03)' }}>
-            <h4 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.2rem', marginBottom: '0.5rem' }}>OFERTA LABORAL DEL FUTURO</h4>
-            <p style={{ fontSize: '0.85rem', lineHeight: 1.5 }}>SE NECESITA: Ingeniero experto en solucionar problemas distribuidos como las infames <strong>Condiciones de Carrera (Race Conditions)</strong> o bien, los indetectables bloqueos absolutos de hardware <strong>(Deadlocks inter-nodos)</strong>.</p>
+        <div className="col-side" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', paddingLeft: '1rem' }}>
+          <Reveal delay={0.2} className="technical-box" style={{ borderStyle: 'solid', borderWidth: '3px' }}>
+            <h3 style={{ color: 'var(--accent)' }}>Escalamiento HORIZONTAL (Scale-Out)</h3>
+            <p style={{ fontSize: '1rem', marginTop: '0.5rem', fontStyle: 'italic' }}>Distribución de carga en múltiples nodos.</p>
+            <ul style={{ fontSize: '0.95rem', marginTop: '1rem', marginLeft: '1.2rem', lineHeight: 1.6 }}>
+              <li>Integración de servidores básicos a través de red.</li>
+              <li>Alta disponibilidad y tolerancia a fallos por redundancia.</li>
+              <li>Complejidad sistémica: requiere orquestación (deadlocks, race conditions).</li>
+            </ul>
           </Reveal>
+        </div>
 
-          {/* Image overflowing visually without animations */}
-          <div className="photo-frame" style={{ position: 'absolute', bottom: '-20vh', right: '2rem', width: '300px', zIndex: 10 }}>
-            <img src="https://images.unsplash.com/photo-1558618047-3c8c76e6c8b3" alt="Racks de servidores en centro de datos" style={{ border: '3px solid var(--ink)' }} />
-          </div>
+        {/* Imagen central cruzando las dos columnas */}
+        <div style={{ position: 'absolute', bottom: '2vh', left: '25%', width: '50%', zIndex: 1, opacity: 0.9 }}>
+          <img src="https://images.unsplash.com/photo-1558618047-3c8c76e6c8b3?q=80&w=2669&auto=format&fit=crop" alt="Centro de Datos" style={{ width: '100%', height: '22vh', objectFit: 'cover', border: '4px solid var(--ink)', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }} />
+          <div style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--ink)' }}>Arreglo de servidores implementando escalamiento horizontal coordinado</div>
         </div>
       </div>
     </Slide>

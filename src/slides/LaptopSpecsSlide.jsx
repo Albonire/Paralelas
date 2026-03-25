@@ -49,7 +49,12 @@ const LaptopSpecsSlide = ({ 'data-index': dataIndex }) => {
         </div>
 
         <div style={{ flex: 1, position: 'relative', width: '100%' }}>
-          <div style={{ position: 'absolute', inset: 0 }}>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 2, ease: "easeInOut" }}
+            style={{ position: 'absolute', inset: 0 }}
+          >
             <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 100], fov: 45 }}>
               <Suspense fallback={null}>
                 <Stage environment="city" intensity={0.6} adjustCamera={1.2}>
@@ -58,7 +63,7 @@ const LaptopSpecsSlide = ({ 'data-index': dataIndex }) => {
               </Suspense>
               <OrbitControls enablePan={false} enableZoom={true} autoRotate autoRotateSpeed={0.5} />
             </Canvas>
-          </div>
+          </motion.div>
           
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
             <SpecCallout 

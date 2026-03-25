@@ -43,7 +43,7 @@ const ComparisonSlide = ({ 'data-index': dataIndex }) => {
       </Reveal>
       
       {/* Overflow image static */}
-      <div className="photo-frame" style={{ position: 'absolute', bottom: '-15vh', left: '10vw', width: '350px', zIndex: 20 }}>
+      <div className="photo-frame" style={{ position: 'absolute', top: '-8vh', right: '5vw', width: '300px', zIndex: 2, opacity: 0.9 }}>
         <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8" alt="Red abstracta" style={{ border: '3px solid var(--ink)' }} />
       </div>
     </Slide>

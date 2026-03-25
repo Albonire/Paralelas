@@ -21,7 +21,7 @@ const ParallelismSlide = ({ 'data-index': dataIndex }) => {
         </div>
         
         <div className="col-main" style={{ position: 'relative' }}>
-          <Reveal as="h2" className="headline-large">Divide y Vencerás: El Arte del Procesamiento Simultáneo</Reveal>
+          <Reveal as="h2" className="headline-large">Principios del Procesamiento Simultáneo</Reveal>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
             <Reveal delay={0.2}>

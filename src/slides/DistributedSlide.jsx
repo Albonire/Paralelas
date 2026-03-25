@@ -11,7 +11,7 @@ const DistributedSlide = ({ 'data-index': dataIndex }) => {
       </header>
       <div className="columns" style={{ position: 'relative' }}>
         <div className="col-main">
-          <Reveal as="h2" className="headline-large">La Red como Computadora</Reveal>
+          <Reveal as="h2" className="headline-large">Sistemas Distribuidos</Reveal>
           <Reveal as="p" className="article-text">
             A diferencia del paralelismo interno, la computación distribuida vive en la separación. Los nodos de procesamiento no comparten memoria ni reloj; operan de manera autónoma y comparten mensajes a través de una red local o mundial.
           </Reveal>

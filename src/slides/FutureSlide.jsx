@@ -6,7 +6,7 @@ const FutureSlide = ({ 'data-index': dataIndex }) => {
   return (
     <Slide className="slide-future" data-index={dataIndex} style={{ zIndex: 0 }}>
       <div className="masthead">
-        <Reveal as="h1" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>EL MAÑANA DE LA COMPUTACIÓN</Reveal>
+        <Reveal as="h1" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>FUTURO DE LA COMPUTACIÓN</Reveal>
       </div>
       <div className="columns" style={{ marginTop: '2rem' }}>
         <div className="col-main">
