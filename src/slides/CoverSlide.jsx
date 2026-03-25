@@ -20,7 +20,7 @@ const CoverSlide = ({ 'data-index': dataIndex }) => {
         <div className="col-main" style={{ paddingRight: '2rem' }}>
           
           <div className="technical-box" style={{ background: 'transparent', color: 'var(--ink)', border: 'none', padding: 0 }}>
-            <Reveal as="h2" className="headline-large" style={{ fontSize: '2rem', marginBottom: '1rem' }}>
+            <Reveal as="h2" className="headline-large" style={{ fontSize: '1rem', marginBottom: '1rem' }}>
               Detalles del Reporte
             </Reveal>
             
