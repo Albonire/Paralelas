@@ -55,6 +55,26 @@ const SlideContainer = ({ children }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, slidesCount, scrollToSlide]);
 
+  // Handle tap/click navigation for tablets & mobile
+  const handleContainerClick = (e) => {
+    // Ignore if clicking interactive elements or the nav dots
+    if (e.target.closest('a') || e.target.closest('.nav-dots') || window.getSelection().toString().length > 0) {
+      return;
+    }
+
+    const screenWidth = window.innerWidth;
+    const clickX = e.clientX;
+
+    // Tap on the right 50% = Next, Tap on the left 50% = Previous
+    if (clickX > screenWidth / 2) {
+      const newIndex = Math.min(activeIndex + 1, slidesCount - 1);
+      if (newIndex !== activeIndex) scrollToSlide(newIndex);
+    } else {
+      const newIndex = Math.max(activeIndex - 1, 0);
+      if (newIndex !== activeIndex) scrollToSlide(newIndex);
+    }
+  };
+
   return (
     <>
       <nav className="nav-dots">
@@ -68,7 +88,7 @@ const SlideContainer = ({ children }) => {
         ))}
       </nav>
       
-      <div className="presentation-container" ref={containerRef}>
+      <div className="presentation-container" ref={containerRef} onClick={handleContainerClick}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child, { 'data-index': index });
