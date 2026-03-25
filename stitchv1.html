@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AMDAHL'S LAW | AN ANALYTICAL DOSSIER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;family=Space+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#e7d8c4",
+                        "inverse-on-surface": "#feefda",
+                        "surface-container-high": "#f5e6d2",
+                        "surface-bright": "#fff8f3",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#c8c6c5",
+                        "tertiary-fixed": "#e6e1df",
+                        "on-tertiary-fixed": "#1d1b1a",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#868381",
+                        "on-secondary-container": "#610000",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "background": "#fff8f3",
+                        "secondary-container": "#ff5c47",
+                        "on-primary-container": "#858383",
+                        "surface-tint": "#5f5e5e",
+                        "surface-variant": "#f0e0cc",
+                        "surface-container-low": "#fff2e1",
+                        "inverse-surface": "#382f22",
+                        "on-primary-fixed": "#1c1b1b",
+                        "primary-fixed": "#e5e2e1",
+                        "on-secondary-fixed": "#410000",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "secondary-fixed": "#ffdad4",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#444748",
+                        "surface": "#fff8f3",
+                        "outline-variant": "#c4c7c7",
+                        "surface-container-highest": "#f0e0cc",
+                        "on-secondary-fixed-variant": "#920703",
+                        "on-error-container": "#93000a",
+                        "secondary": "#8B0000",
+                        "primary-container": "#1c1b1b",
+                        "on-primary-fixed-variant": "#474646",
+                        "primary": "#111111",
+                        "on-tertiary-fixed-variant": "#484645",
+                        "outline": "#747878",
+                        "on-background": "#221a0e",
+                        "tertiary-fixed-dim": "#cac6c3",
+                        "tertiary-container": "#1d1b1a",
+                        "on-surface": "#221a0e",
+                        "tertiary": "#111111",
+                        "surface-container": "#fbecd7",
+                        "on-tertiary": "#ffffff"
+                    },
+                    fontFamily: {
+                        "serif": ["Playfair Display", "serif"],
+                        "body": ["Lora", "serif"],
+                        "mono": ["Space Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>body {
+    background-color: #fff8f3;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCsAKKjnmXej67NdcDcTmu6V-jvrsr06Lf9Tg3oln9cuY3nzrPAQIFyjNUhgJXFPXp6FhLWKb24dH4g3jECP4_dypHafRpvEQ4uJ-QmIp45mqOf8ANjpCZUmvL_WJq6Z2avDDcOjK7l9_ifRBE3vvmaV-k1w0-VdnKXki_2DuRLkZeMDh5jAz3kbdRlJ9pH4Qk2eD9oou6-WNSmm9Q20vB35Of_X3XhL2q7-dfYZAmpvQQnA5Qoewaxfy2jD_ESFVxCO5XqjE0-1cMJ);
+    background-blend-mode: multiply;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0
+    }
+section {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 4px double #111
+    }
+.ink-bleed {
+    border: 2pt solid #111
+    }
+.dossier-stamp {
+    transform: rotate(-15deg);
+    border: 3px solid #8B0000;
+    color: #8B0000;
+    padding: 4px 12px;
+    font-family: "Space Mono", monospace;
+    text-transform: uppercase;
+    font-weight: bold
+    }
+.redaction {
+    background-color: #111;
+    color: #111;
+    transition: opacity 0.3s ease
+    }
+.redaction:hover {
+    opacity: 0.1
+    }
+.graph-curve {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 5s forwards linear
+    }
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+        }
+    }
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 0.15em solid #8B0000;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite
+    }
+@keyframes typing {
+    from {
+        width: 0
+        } to {
+        width: 100%
+        }
+    }
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent
+        } 50% {
+        border-color: #8B0000;
+        }
+    }</style>
+</head>
+<body class="text-primary selection:bg-secondary selection:text-white">
+<!-- NAVIGATION SHELL -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-[#fff8f3]/95 backdrop-blur-sm border-b-4 border-[#111111]">
+<div class="font-serif font-black italic text-2xl tracking-tighter text-[#111111]">AMDAHL'S LAW</div>
+<div class="hidden md:flex gap-6 font-mono text-xs uppercase">
+<a class="text-[#8B0000] border-b-2 border-[#8B0000] font-bold" href="#section1">Theory</a>
+<a class="text-[#111111] opacity-80 hover:opacity-100 transition-colors duration-150" href="#section3">Limits</a>
+<a class="text-[#111111] opacity-80 hover:opacity-100 transition-colors duration-150" href="#section4">Speedup</a>
+<a class="text-[#111111] opacity-80 hover:opacity-100 transition-colors duration-150" href="#section6">Scaling</a>
+<a class="text-[#111111] opacity-80 hover:opacity-100 transition-colors duration-150" href="#section7">Efficiency</a>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-2xl" data-icon="history_edu">history_edu</span>
+</div>
+</nav>
+<aside class="fixed left-0 top-1/2 -translate-y-1/2 w-20 flex flex-col gap-4 z-40 items-center border-r-2 border-[#111111] py-8 bg-transparent">
+<div class="font-mono font-bold text-[10px] text-[#8B0000] -rotate-90 mb-8 whitespace-nowrap">ARCHIVE INDEX</div>
+<div class="bg-[#111111] text-[#fff8f3] p-2 flex flex-col items-center scale-95 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="menu_book">menu_book</span>
+</div>
+<div class="text-[#111111] p-2 flex flex-col items-center opacity-60 hover:bg-[#8B0000]/10 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="functions">functions</span>
+</div>
+<div class="text-[#111111] p-2 flex flex-col items-center opacity-60 hover:bg-[#8B0000]/10 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="insights">insights</span>
+</div>
+<div class="text-[#111111] p-2 flex flex-col items-center opacity-60 hover:bg-[#8B0000]/10 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="memory">memory</span>
+</div>
+</aside>
+<!-- SECTION 1: THE MASTHEAD -->
+<section class="pt-24 px-12 md:px-24 justify-center items-center text-center" id="section1">
+<div class="max-w-6xl w-full border-x-4 border-[#111111] h-full flex flex-col justify-between p-12">
+<div class="flex justify-between items-end border-b-2 border-[#111111] pb-4">
+<div class="font-mono text-xs uppercase tracking-widest text-left">
+                    Vol. CXIV | Issue 742<br/>September 2024
+                </div>
+<div class="font-mono text-xs uppercase tracking-widest text-right">
+                    CLASSIFIED RESEARCH<br/>FILE: 1967-AFIPS
+                </div>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-12 py-12">
+<div class="flex-1 text-left">
+<h1 class="font-serif italic font-black text-6xl md:text-9xl leading-[0.8] mb-4 text-[#111111]">
+                        AMDAHL'S <br/>LAW
+                    </h1>
+<p class="font-serif italic text-2xl md:text-4xl text-[#111111] opacity-90">
+                        AN ANALYTICAL DOSSIER
+                    </p>
+</div>
+<div class="w-64 h-80 grayscale contrast-150 border-4 border-[#111111] bg-white relative overflow-hidden flex-shrink-0">
+<img alt="Portrait of Gene Amdahl" class="w-full h-full object-cover opacity-80 mix-blend-multiply" data-alt="High contrast black and white portrait of an academic man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmtbsJZNcA5BNRrt07vVx3lkc4cfQEbs7-4Cd_nwPadCRMbhNpvK4zbDEc3NZL7XeDibde81OavMbtU7gI0rVT8qtRdxSIOjxrnCrjC1WKO0yqvo6dBGOVowedRb1AWDVx2kYqTB_SVJGI7SA7fc8My2pqn7a3dFRfbq2UN5NL1MFMLZuyLW0sqvEDoPl9x-xIFTB0lxLfvLhoqL6qUr_UYbhYFkbzVdG-imeGWwKAxdyUe3lbq04Eqj8Jq9MyNzv-7ZYYJxWmqLu9"/>
+<div class="absolute bottom-2 right-2 dossier-stamp">GENE AMDAHL</div>
+</div>
+</div>
+<div class="border-t-4 border-double border-[#111111] pt-6 flex justify-between items-center">
+<span class="font-mono text-sm">PRICE: TWOPENCE</span>
+<span class="font-serif italic font-bold">A Study in Theoretical Speedup and Parallel Efficiency</span>
+<span class="font-mono text-sm">ARCHIVE NO. 402</span>
+</div>
+</div>
+</section>
+<!-- SECTION 2: THE PARALLEL PROMISE -->
+<section class="px-12 md:px-24 flex flex-col justify-center bg-surface-container-low" id="section2">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
+<div class="space-y-6">
+<h2 class="font-serif italic font-black text-4xl border-b-4 border-[#111111] pb-2">I. THE ERA</h2>
+<p class="font-body text-lg leading-relaxed first-letter:text-6xl first-letter:font-serif first-letter:float-left first-letter:mr-3">
+                    As we transition into the silicon age of multi-core ubiquity, the siren call of parallel processing grows louder. The industry promises a linear trajectory: double the cores, double the performance. However, theoretical physics and logical bottlenecks stand as silent guardians.
+                </p>
+</div>
+<div class="space-y-6">
+<h2 class="font-serif italic font-black text-4xl border-b-4 border-[#111111] pb-2">II. THE WALL</h2>
+<p class="font-body text-lg leading-relaxed">
+                    Amdahl's insight in 1967 remains the single most significant roadblock to this dream. He posited that any software system is tethered by its most stubborn component—the serial sequence. No amount of parallelism can accelerate that which must happen in order.
+                </p>
+<div class="dossier-stamp w-fit">STRICTLY LOGICAL</div>
+</div>
+<div class="space-y-6">
+<h2 class="font-serif italic font-black text-4xl border-b-4 border-[#111111] pb-2">III. THE LIMIT</h2>
+<p class="font-body text-lg leading-relaxed">
+                    Even with an infinite number of processors, the time required to complete a task remains bounded by the non-parallelizable portion of the workload. This is the "Amdahlian Asymptote," a hard ceiling on computational ambition.
+                </p>
+<div class="font-mono text-[10px] p-2 border border-[#111111] bg-white">
+                    [REF_ID: 00-112-9A] DATA VERIFIED BY AFIPS COMMITTEE.
+                </div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: THE DICHOTOMY -->
+<section class="px-12 md:px-24 flex items-center justify-center" id="section3">
+<div class="max-w-5xl w-full grid grid-cols-2 gap-24 items-center">
+<div class="space-y-8">
+<h3 class="font-serif italic font-black text-5xl">SERIAL vs. <br/><span class="text-[#8B0000]">PARALLEL</span></h3>
+<div class="space-y-4 font-mono text-sm uppercase">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-[#111111]"></div>
+<span>Serial Segment (Locked)</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 bg-[#8B0000]"></div>
+<span>Parallelizable Portion</span>
+</div>
+</div>
+</div>
+<div class="relative h-[400px] border-4 border-[#111111] bg-white p-8">
+<div class="h-full w-full flex flex-col gap-4">
+<!-- Task Visualization -->
+<div class="flex h-12 gap-2">
+<div class="bg-[#111111] w-1/4 h-full flex items-center justify-center text-white font-mono text-xs">FIXED</div>
+<div class="bg-[#8B0000] w-3/4 h-full flex items-center justify-center text-white font-mono text-xs">P1</div>
+</div>
+<div class="flex justify-end gap-2 text-xs font-mono opacity-50 italic">SINGLE CORE PERFORMANCE</div>
+<div class="border-t-2 border-dashed border-[#111111] my-8"></div>
+<div class="flex h-12 gap-2">
+<div class="bg-[#111111] w-1/4 h-full"></div>
+<div class="bg-[#8B0000] w-1/4 h-full"></div>
+<div class="bg-[#8B0000] w-1/4 h-full"></div>
+<div class="bg-[#8B0000] w-1/4 h-full"></div>
+</div>
+<div class="flex justify-end gap-2 text-xs font-mono opacity-50 italic">QUAD CORE PERFORMANCE</div>
+<div class="mt-8 p-4 bg-surface-container-high border-2 border-[#111111] font-mono text-xs">
+                        NOTICE: The <span class="bg-[#111111] text-white px-1">FIXED</span> segment remains constant across all architectures.
+                    </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: THE EQUATION -->
+<section class="px-12 md:px-24 flex items-center justify-center bg-[#fff8f3]" id="section4">
+<div class="text-center relative">
+<h4 class="font-mono text-xs uppercase tracking-[0.5em] mb-12">Mathematical Core Axiom</h4>
+<div class="font-serif italic text-6xl md:text-9xl font-black relative inline-block px-12">
+<div class="absolute -top-12 -left-12 opacity-10">
+<span class="material-symbols-outlined text-[300px]" data-icon="functions">functions</span>
+</div>
+<div class="relative z-10 flex items-center gap-8">
+<span>S = </span>
+<div class="flex flex-col items-center">
+<div class="border-b-4 border-[#111111] w-full pb-4">1</div>
+<div class="pt-4 flex items-center gap-4 text-4xl md:text-6xl">
+<span class="relative">
+                                (1 - p)
+                                <svg class="absolute -inset-2 pointer-events-none" viewbox="0 0 100 50">
+<ellipse cx="50" cy="25" fill="none" rx="48" ry="23" stroke="#8B0000" stroke-dasharray="5 5" stroke-width="2"></ellipse>
+</svg>
+</span>
+<span>+</span>
+<div class="flex flex-col items-center">
+<div class="border-b-2 border-[#111111] pb-1 px-4">p</div>
+<div class="pt-1 relative">
+                                    N
+                                    <svg class="absolute -inset-1 pointer-events-none" viewbox="0 0 40 40">
+<circle cx="20" cy="20" fill="none" r="18" stroke="#8B0000" stroke-width="2"></circle>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center gap-24">
+<div class="text-left font-mono">
+<span class="text-[#8B0000] font-bold">p</span> = Parallel Fraction
+                </div>
+<div class="text-left font-mono">
+<span class="text-[#8B0000] font-bold">N</span> = Processor Count
+                </div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: VARIABLE GLOSSARY -->
+<section class="px-12 md:px-24 flex items-center justify-center bg-surface-container-highest" id="section5">
+<div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="p-8 border-4 border-[#111111] bg-white relative">
+<div class="absolute -top-4 -left-4 bg-[#8B0000] text-white font-mono text-xs px-2 py-1">VAR: p</div>
+<h5 class="font-serif italic font-bold text-3xl mb-4">The Parallel Fraction</h5>
+<p class="font-body text-lg typewriter">The portion of execution time benefiting from improvement.</p>
+<div class="mt-8 pt-8 border-t border-[#111111] opacity-50 font-mono text-xs">
+                    EX: If 90% of a task can be parallelized, p = 0.90. The remaining 0.10 is the serial bottleneck.
+                </div>
+</div>
+<div class="p-8 border-4 border-[#111111] bg-white relative">
+<div class="absolute -top-4 -left-4 bg-[#111111] text-white font-mono text-xs px-2 py-1">VAR: N</div>
+<h5 class="font-serif italic font-bold text-3xl mb-4">The Scalability Factor</h5>
+<p class="font-body text-lg typewriter">The number of parallel execution units available.</p>
+<div class="mt-8 pt-8 border-t border-[#111111] opacity-50 font-mono text-xs">
+                    EX: A 16-core processor provides N = 16. However, as N approaches infinity, Speedup (S) approaches 1/(1-p).
+                </div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: THE ASYMPTOTE -->
+<section class="px-12 md:px-24 flex flex-col items-center justify-center" id="section6">
+<div class="w-full max-w-5xl">
+<h6 class="font-serif italic text-4xl font-black mb-8 border-l-8 border-[#8B0000] pl-6 uppercase">The Efficiency Decay Curve</h6>
+<div class="relative aspect-video border-b-4 border-l-4 border-[#111111] bg-white/50 p-8">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between p-8 opacity-10 pointer-events-none">
+<div class="border-b border-[#111111]"></div>
+<div class="border-b border-[#111111]"></div>
+<div class="border-b border-[#111111]"></div>
+<div class="border-b border-[#111111]"></div>
+<div class="border-b border-[#111111]"></div>
+</div>
+<svg class="w-full h-full" viewbox="0 0 1000 500">
+<!-- 95% Parallel Curve -->
+<path class="graph-curve" d="M 0 500 Q 50 200, 1000 50" fill="none" stroke="#8B0000" stroke-width="4"></path>
+<text fill="#8B0000" font-family="Space Mono" font-size="12" x="910" y="40">p=0.95</text>
+<!-- 75% Parallel Curve -->
+<path class="graph-curve" d="M 0 500 Q 50 350, 1000 250" fill="none" stroke="#111111" stroke-width="3"></path>
+<text fill="#111111" font-family="Space Mono" font-size="12" x="910" y="240">p=0.75</text>
+<!-- 50% Parallel Curve -->
+<path class="graph-curve" d="M 0 500 Q 50 450, 1000 400" fill="none" stroke="#111111" stroke-dasharray="4 4" stroke-width="2"></path>
+<text fill="#111111" font-family="Space Mono" font-size="12" x="910" y="390">p=0.50</text>
+</svg>
+<div class="absolute bottom-[-40px] left-1/2 -translate-x-1/2 font-mono text-xs uppercase">Number of Processors (N)</div>
+<div class="absolute left-[-60px] top-1/2 -translate-y-1/2 -rotate-90 font-mono text-xs uppercase">Speedup (S)</div>
+</div>
+<div class="mt-12 flex justify-between font-mono text-[10px] uppercase opacity-60">
+<span>[X-AXIS: 1 to 1024 CORES]</span>
+<span>[Y-AXIS: NORMALIZED PERFORMANCE]</span>
+</div>
+</div>
+</section>
+<!-- SECTION 7: THE SCALING CRISIS -->
+<section class="px-12 md:px-24 flex items-center justify-center bg-white/30" id="section7">
+<div class="max-w-4xl border-4 border-[#111111] p-12 bg-surface relative">
+<div class="absolute top-4 right-6 dossier-stamp">EDITORIAL</div>
+<p class="font-serif italic text-4xl md:text-5xl leading-tight mb-8">
+                "We must accept that the <span class="text-[#8B0000]">brute-force</span> addition of cores is a game of diminishing returns."
+            </p>
+<div class="grid grid-cols-2 gap-12 font-body text-lg leading-relaxed">
+<p>
+                    The crisis of scaling is not mechanical, but structural. Modern software architecture often prioritizes convenience over parallelism, leaving vast swathes of code trapped in single-thread dependencies. We are building massive highways that all lead to a single-lane bridge.
+                </p>
+<p>
+                    Amdahl's Law is often misconstrued as a pessimistic outlook, but it is actually a precise diagnostic tool. It tells us exactly where to optimize: find the serial bottleneck, or accept your fate as an asymptote.
+                </p>
+</div>
+<div class="mt-8 pt-8 border-t-2 border-[#111111] flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-[#111111] rounded-full"></div>
+<div>
+<div class="font-mono text-xs font-bold uppercase">Senior Correspondent</div>
+<div class="font-serif italic text-sm">Institution for Computational Ethics</div>
+</div>
+</div>
+<div class="font-mono text-xs bg-[#111111] text-white px-3 py-1">FILE: END-A1</div>
+</div>
+</div>
+</section>
+<!-- SECTION 8: THE VERDICT -->
+<section class="px-12 md:px-24 flex flex-col items-center justify-center text-center" id="section8">
+<div class="max-w-xl space-y-8">
+<div class="inline-block p-1 border-2 border-[#111111] mb-8">
+<div class="border border-[#111111] px-4 py-1 font-mono text-xs font-bold uppercase">Archive Record 1967.04.12</div>
+</div>
+<h2 class="font-serif italic font-black text-5xl md:text-7xl">THE VERDICT</h2>
+<p class="font-body text-xl italic opacity-70">
+                Performance is not a hardware problem. It is a mathematical certainty.
+            </p>
+<div class="py-12 flex justify-center">
+<div class="w-48 h-48 border-4 border-double border-[#8B0000] flex items-center justify-center text-[#8B0000] font-mono font-black text-3xl rotate-12">
+                    END OF<br/>PAPER
+                </div>
+</div>
+<div class="font-mono text-[10px] uppercase tracking-widest text-[#111111]/40 pt-12">
+                © 1967-2024 INSTITUTIONAL ARCHIVE. ALL DATA CLASSIFIED.
+            </div>
+</div>
+</section>
+<!-- FOOTER CLUSTER -->
+<footer class="w-full py-12 px-8 mt-20 flex flex-col items-center gap-6 bg-[#fff8f3] border-t-4 border-double border-[#111111]">
+<div class="flex flex-wrap justify-center gap-8 font-serif text-sm italic">
+<a class="text-[#111111] hover:italic hover:text-[#8B0000]" href="#">Primary Source</a>
+<a class="text-[#111111] hover:italic hover:text-[#8B0000]" href="#">Citation PDF</a>
+<a class="text-[#111111] hover:italic hover:text-[#8B0000]" href="#">Contact Researcher</a>
+<a class="text-[#111111] hover:italic hover:text-[#8B0000]" href="#">Legal Notice</a>
+</div>
+<div class="font-mono text-[10px] text-[#111111] opacity-50">
+            METADATA: ARCHIVE_HASH_88x2-A1 | STAMP: VALID_2024_Q3
+        </div>
+</footer>
+</body></html>

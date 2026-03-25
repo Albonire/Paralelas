@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Heraldo de la Computación — Edición Especial</title>
+
+    <!-- Google Fonts: Calidad editorial superior -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* === VARIABLES DE TEMA NEWSPAPER === */
+        :root {
+            --bg-paper: #f4f1ea; /* Papel crema clásico */
+            --ink: #1a1a1a;      /* Tinta negra profunda */
+            --ink-dim: #444444;  /* Tinta desgastada */
+            --accent: #c41e3a;   /* Rojo editorial de alerta */
+            --border: #2c2c2c;
+            
+            --font-display: 'Fraunces', serif;
+            --font-body: 'EB Garamond', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-slow: 1.2s var(--ease-out-expo);
+            --transition-med: 0.6s var(--ease-out-expo);
+        }
+
+        /* === RESET & BASE === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            background-color: var(--bg-paper);
+            color: var(--ink);
+            font-family: var(--font-body);
+            overflow: hidden;
+            height: 100dvh;
+            line-height: 1.45;
+        }
+
+        /* === TEXTURA PERIÓDICO REAL (mejorada) === */
+        .newspaper-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.085;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+                linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px);
+            background-size: 140px 140px, 24px 24px;
+        }
+
+        .paper-fold {
+            position: fixed;
+            top: 0; bottom: 0; left: 50%;
+            width: 52px;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.09), transparent);
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* === ESTRUCTURA DE SLIDES === */
+        .presentation-container {
+            height: 100dvh;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            scrollbar-width: none;
+        }
+        .presentation-container::-webkit-scrollbar { display: none; }
+
+        .slide {
+            height: 100dvh;
+            width: 100%;
+            padding: clamp(1rem, 4vw, 4rem);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .slide-frame {
+            border: 2px solid var(--ink);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.22);
+            background: #f8f4ed;
+            height: 100%;
+            width: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            position: relative;
+            padding: 1.8rem;
+        }
+
+        /* Columnas con reglas verticales como periódico real */
+        .columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .columns::before,
+        .columns::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(0,0,0,0.28);
+            z-index: 1;
+        }
+        .columns::before { left: 33.33%; }
+        .columns::after { left: 66.66%; }
+
+        .col-main { grid-column: span 2; }
+        .col-side { grid-column: span 1; border-left: 1px solid var(--ink); padding-left: 2rem; }
+
+        /* === FOTO ESTILO RECORTE DE PERIÓDICO === */
+        .photo-frame {
+            border: 1px solid var(--ink);
+            padding: 9px;
+            background: white;
+            margin: 1.8rem 0;
+            box-shadow: 4px 4px 0 var(--ink);
+            position: relative;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: contrast(1.1) brightness(0.95);
+        }
+        .caption {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-align: center;
+            margin-top: 0.7rem;
+            color: var(--ink-dim);
+            letter-spacing: 0.6px;
+            line-height: 1.3;
+        }
+
+        /* === COMPONENTES EDITORIALES === */
+        .masthead {
+            border-bottom: 4px double var(--ink);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .masthead-top {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .masthead h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .headline-large {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 6vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 0.5rem;
+        }
+
+        .headline-med {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .drop-cap::first-letter {
+            float: left;
+            font-family: var(--font-display);
+            font-size: 5rem;
+            line-height: 0.75;
+            padding-right: 10px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+
+        .article-text {
+            font-size: clamp(1rem, 1.2vw, 1.2rem);
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .pull-quote {
+            font-family: var(--font-display);
+            font-size: 1.85rem;
+            font-style: italic;
+            border-top: 2px solid var(--ink);
+            border-bottom: 2px solid var(--ink);
+            padding: 1.5rem 0;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .technical-box {
+            background: rgba(0,0,0,0.03);
+            border: 1px dashed var(--ink);
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .footer-info {
+            border-top: 1px solid var(--ink);
+            padding-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+        }
+
+        /* === ANIMACIONES === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.2s; }
+        .reveal-delay-2 { transition-delay: 0.4s; }
+        .reveal-delay-3 { transition-delay: 0.6s; }
+
+        .ink-reveal {
+            position: relative;
+            overflow: hidden;
+        }
+        .ink-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-paper);
+            transition: transform 1.5s var(--ease-out-expo);
+            z-index: 2;
+        }
+        .slide.visible .ink-reveal::after {
+            transform: translateX(101%);
+        }
+
+        /* === ICONOS SVG === */
+        .svg-icon {
+            width: 48px;
+            height: 48px;
+            fill: var(--ink);
+            margin-bottom: 1rem;
+        }
+
+        /* === NAVIGATION DOTS === */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1001;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--ink);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition-med);
+        }
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.5);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .columns { grid-template-columns: 1fr; }
+            .col-side { border-left: none; border-top: 1px solid var(--ink); padding-left: 0; padding-top: 1rem; }
+            .columns::before, .columns::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="newspaper-overlay"></div>
+    <div class="paper-fold"></div>
+
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <div class="presentation-container" id="container">
+        
+        <!-- SLIDE 1: PORTADA -->
+        <section class="slide" id="slide-0">
+            <div class="slide-frame">
+                <div class="masthead">
+                    <div class="masthead-top">
+                        <span>Edición No. 01 — Marzo 2026</span>
+                        <span>Precio: 10^9 Ciclos</span>
+                        <span>Pamplona, Colombia</span>
+                    </div>
+                    <h1 class="reveal">EL HERALDO COMPUTACIONAL</h1>
+                </div>
+                
+                <div class="columns">
+                    <div class="col-main">
+                        <div class="ink-reveal">
+                            <h2 class="headline-large">¡EXTRA! LA REVOLUCIÓN DE LA ESCALA MASIVA</h2>
+                        </div>
+                        <p class="article-text drop-cap reveal reveal-delay-1">
+                            En un mundo donde los datos fluyen como ríos desbordados, la computación tradicional ha llegado a su límite físico. Ya no es suficiente con un solo procesador más rápido; hoy la respuesta reside en la orquestación. La computación paralela y distribuida no son meras técnicas, son el nuevo paradigma de la inteligencia colectiva de las máquinas.
+                        </p>
+                        <div class="pull-quote reveal reveal-delay-2">
+                            "Si quieres ir rápido, ve solo. Si quieres llegar lejos, ve acompañado por mil nodos."
+                        </div>
+
+                        <!-- IMAGEN PROFESIONAL -->
+                        <div class="photo-frame reveal reveal-delay-3">
+                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31" alt="Centro de datos masivo con racks iluminados">
+                            <p class="caption">Centro de computación masiva en escala industrial — Unsplash / El Heraldo</p>
+                        </div>
+                    </div>
+                    <div class="col-side">
+                        <h3 class="headline-med">EN ESTA EDICIÓN</h3>
+                        <ul style="list-style: none; font-family: var(--font-mono); font-size: 0.9rem;">
+                            <li class="reveal reveal-delay-1" style="margin-bottom: 1rem;">→ Arquitecturas de Flynn: El mapa del tesoro.</li>
+                            <li class="reveal reveal-delay-2" style="margin-bottom: 1rem;">→ Paralelismo vs Distribución: La gran frontera.</li>
+                            <li class="reveal reveal-delay-3" style="margin-bottom: 1rem;">→ La Ley de Amdahl: ¿Por qué nada es perfecto?</li>
+                        </ul>
+                        <div class="technical-box reveal reveal-delay-3" style="margin-top: 2rem;">
+                            <strong>ALERTA TÉCNICA:</strong>
+                            El escalamiento vertical ha muerto. Larga vida al escalamiento horizontal.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-info">
+                    <span>CONTINÚA EN LA PÁGINA 2</span>
+                    <span>EDITORIAL: EL FIN DE LO SECUENCIAL</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: COMPUTACIÓN PARALELA -->
+        <section class="slide" id="slide-1">
+            <div class="slide-frame">
+                <header class="masthead-top">
+                    <span>SECCIÓN: CIENCIA & TECNOLOGÍA</span>
+                    <span>EL HERALDO</span>
+                </header>
+
+                <div class="columns">
+                    <div class="col-side">
+                        <svg class="svg-icon reveal" viewBox="0 0 24 24">
+                            <path d="M13,3H11V7H13V3M13,17H11V21H13V17M21,11V13H17V11H21M7,11V13H3V11H7M15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9A3,3 0 0,1 15,12M3,3V5H5V3H3M21,3V5H19V3H21M3,21V19H5V21H3M21,21V19H19V21H21Z"/>
+                        </svg>
+                        <h3 class="headline-med reveal reveal-delay-1">¿Qué es el Paralelismo?</h3>
+                        <p class="article-text reveal reveal-delay-2">
+                            Es la ejecución simultánea de múltiples tareas para resolver un problema común. Imagina un equipo de obreros construyendo una pared: cada uno pone un ladrillo al mismo tiempo. 
+                        </p>
+                        <div class="technical-box reveal reveal-delay-3" style="margin-top: 1rem;">
+                            CPU Multi-core<br>
+                            GPU Computing<br>
+                            Supercomputadoras
+                        </div>
+                    </div>
+                    <div class="col-main">
+                        <h2 class="headline-large ink-reveal">Sincronía en el Corazón del Silicio</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="reveal reveal-delay-1">
+                                <h4 style="font-family: var(--font-display); font-weight: 700;">Nivel de Datos</h4>
+                                <p class="article-text">Mismas instrucciones operando sobre diferentes pedazos de información de forma masiva.</p>
+                            </div>
+                            <div class="reveal reveal-delay-2">
+                                <h4 style="font-family: var(--font-display); font-weight: 700;">Nivel de Tareas</h4>
+                                <p class="article-text">Diferentes hilos de ejecución realizando operaciones distintas simultáneamente.</p>
+                            </div>
+                        </div>
+                        <div class="pull-quote reveal reveal-delay-3">
+                            "El paralelismo ocurre en un solo lugar físico, compartiendo el mismo latido del reloj."
+                        </div>
+
+                        <!-- IMAGEN -->
+                        <div class="photo-frame reveal">
+                            <img src="https://images.unsplash.com/photo-1517077304055-6e89ab7e1848" alt="Chip multi-core iluminado">
+                            <p class="caption">Procesador multi-core en plena ejecución — Unsplash / El Heraldo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="footer-info">
+                    <span>PÁGINA 2</span>
+                    <span>SISTEMAS PARALELOS</span>
+                </footer>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: TAXONOMÍA DE FLYNN -->
+        <section class="slide" id="slide-2">
+            <div class="slide-frame">
+                <h2 class="headline-large" style="text-align: center; border-bottom: 2px solid var(--ink);">EL MAPA DE LAS ARQUITECTURAS</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; height: 100%;">
+                    <div class="technical-box reveal" style="text-align: center;">
+                        <h3 style="font-family: var(--font-display);">SISD</h3>
+                        <p>Single Instruction Single Data</p>
+                        <div style="font-size: 0.7rem; margin-top: 1rem;">El clásico von Neumann. Un solo flujo.</div>
+                    </div>
+                    <div class="technical-box reveal reveal-delay-1" style="text-align: center; border-style: solid; background: #e8e4db;">
+                        <h3 style="font-family: var(--font-display);">SIMD</h3>
+                        <p>Single Instruction Multiple Data</p>
+                        <div style="font-size: 0.7rem; margin-top: 1rem;">GPUs modernas. Procesamiento de vectores.</div>
+                    </div>
+                    <div class="technical-box reveal reveal-delay-2" style="text-align: center;">
+                        <h3 style="font-family: var(--font-display);">MISD</h3>
+                        <p>Multiple Instruction Single Data</p>
+                        <div style="font-size: 0.7rem; margin-top: 1rem;">Raro. Sistemas redundantes de alta seguridad.</div>
+                    </div>
+                    <div class="technical-box reveal reveal-delay-3" style="text-align: center; border-style: solid; background: #e8e4db;">
+                        <h3 style="font-family: var(--font-display);">MIMD</h3>
+                        <p>Multiple Instruction Multiple Data</p>
+                        <div style="font-size: 0.7rem; margin-top: 1rem;">Multiprocesadores y sistemas distribuidos.</div>
+                    </div>
+                </div>
+
+                <!-- IMAGEN -->
+                <div class="photo-frame" style="margin-top: 1.5rem;">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71" alt="Supercomputadora con racks">
+                    <p class="caption">Taxonomía de Flynn en acción — Supercomputadoras modernas — Unsplash</p>
+                </div>
+
+                <div class="footer-info">
+                    <span>INFOGRAFÍA TÉCNICA</span>
+                    <span>ESTÁNDAR DE LA INDUSTRIA</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: COMPUTACIÓN DISTRIBUIDA -->
+        <section class="slide" id="slide-3">
+            <div class="slide-frame">
+                <header class="masthead-top">
+                    <span>PÁGINA 4 — REPORTAJE ESPECIAL</span>
+                    <span>MARZO 2026</span>
+                </header>
+
+                <div class="columns">
+                    <div class="col-main">
+                        <h2 class="headline-large ink-reveal">La Red es la Computadora</h2>
+                        <p class="article-text reveal">
+                            A diferencia del paralelismo, la computación distribuida vive en la separación. Los nodos no comparten memoria ni reloj; comparten mensajes a través de una red. Es una sociedad de computadoras colaborando para un fin mayor.
+                        </p>
+                        <div style="margin-top: 2rem; border: 1px solid var(--ink); padding: 1rem;" class="reveal reveal-delay-1">
+                            <h4 style="font-family: var(--font-display); text-transform: uppercase;">Características Clave:</h4>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                <li><strong>Heterogeneidad:</strong> Máquinas diferentes trabajando juntas.</li>
+                                <li><strong>Transparencia:</strong> El usuario ve un solo sistema.</li>
+                                <li><strong>Tolerancia a fallos:</strong> Si un nodo muere, el periódico sigue imprimiéndose.</li>
+                            </ul>
+                        </div>
+
+                        <!-- IMAGEN -->
+                        <div class="photo-frame reveal">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa" alt="Red global de datos">
+                            <p class="caption">La red es la nueva supercomputadora — Conexión mundial — Unsplash / El Heraldo</p>
+                        </div>
+                    </div>
+                    <div class="col-side">
+                        <svg class="svg-icon reveal" viewBox="0 0 24 24">
+                            <path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/>
+                        </svg>
+                        <h3 class="headline-med reveal">Sistemas Distribuidos</h3>
+                        <p class="article-text reveal reveal-delay-1">
+                            Desde el buscador de Google hasta la red de Bitcoin, todo lo que escalamos hoy es distribuido por naturaleza.
+                        </p>
+                        <div class="technical-box reveal reveal-delay-2" style="margin-top: 1rem; border-color: var(--accent); color: var(--accent);">
+                            URGENTE:<br>
+                            ¡La latencia de red es el nuevo cuello de botella!
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="footer-info">
+                    <span>REPORTAJE</span>
+                    <span>DESCENTRALIZACIÓN MASIVA</span>
+                </footer>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: COMPARATIVA -->
+        <section class="slide" id="slide-4">
+            <div class="slide-frame">
+                <h2 class="headline-large" style="text-align: center;">LA GRAN COMPARATIVA EDITORIAL</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 2rem; font-family: var(--font-display);">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--ink);">
+                            <th style="padding: 1rem; text-align: left;">Característica</th>
+                            <th style="padding: 1rem; text-align: center; background: rgba(0,0,0,0.05);">Paralela</th>
+                            <th style="padding: 1rem; text-align: center;">Distribuida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="reveal" style="border-bottom: 1px solid var(--ink-dim);">
+                            <td style="padding: 1rem;">Memoria</td>
+                            <td style="padding: 1rem; text-align: center;">Compartida / Estrecha</td>
+                            <td style="padding: 1rem; text-align: center;">Privada / Local</td>
+                        </tr>
+                        <tr class="reveal reveal-delay-1" style="border-bottom: 1px solid var(--ink-dim);">
+                            <td style="padding: 1rem;">Comunicación</td>
+                            <td style="padding: 1rem; text-align: center;">Bus / Memoria</td>
+                            <td style="padding: 1rem; text-align: center;">Paso de Mensajes (Red)</td>
+                        </tr>
+                        <tr class="reveal reveal-delay-2" style="border-bottom: 1px solid var(--ink-dim);">
+                            <td style="padding: 1rem;">Escalabilidad</td>
+                            <td style="padding: 1rem; text-align: center;">Limitada por hardware</td>
+                            <td style="padding: 1rem; text-align: center;">Casi infinita</td>
+                        </tr>
+                        <tr class="reveal reveal-delay-3" style="border-bottom: 1px solid var(--ink-dim);">
+                            <td style="padding: 1rem;">Control</td>
+                            <td style="padding: 1rem; text-align: center;">Centralizado (OS)</td>
+                            <td style="padding: 1rem; text-align: center;">Descentralizado / Autónomo</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pull-quote reveal reveal-delay-3">
+                    "El paralelismo optimiza el rendimiento; la distribución optimiza la disponibilidad."
+                </div>
+
+                <!-- IMAGEN -->
+                <div class="photo-frame">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" alt="Cuello de botella en computación">
+                    <p class="caption">Paralelismo vs Distribución: la gran comparativa — Unsplash</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: LEY DE AMDAHL -->
+        <section class="slide" id="slide-5">
+            <div class="slide-frame">
+                <div class="columns">
+                    <div class="col-main">
+                        <h2 class="headline-large">La Ley de Amdahl: La Dura Verdad</h2>
+                        <p class="article-text reveal">
+                            No importa cuántos procesadores añadas, la velocidad de tu programa siempre estará limitada por la parte que NO se puede paralelizar. Es el cuello de botella existencial de la computación.
+                        </p>
+                        <div class="technical-box reveal reveal-delay-1" style="font-size: 1.5rem; text-align: center; margin: 2rem 0;">
+                            Speedup = 1 / [ (1 - P) + (P / N) ]
+                        </div>
+                        <p class="article-text reveal reveal-delay-2">
+                            Donde <strong>P</strong> es la fracción paralelizable y <strong>N</strong> el número de procesadores. Si el 10% de tu código es secuencial, nunca serás más de 10 veces más rápido, aunque tengas un millón de núcleos.
+                        </p>
+                    </div>
+                    <div class="col-side" style="background: var(--ink); color: var(--bg-paper); padding: 2rem;">
+                        <h3 class="headline-med">OPINIÓN</h3>
+                        <p style="font-style: italic; font-size: 0.9rem;">
+                            "Muchos creen que duplicar el hardware duplica la velocidad. Amdahl nos recuerda que la arquitectura del software es la verdadera reina."
+                        </p>
+                        <div style="border-top: 1px solid var(--bg-paper); margin-top: 1rem; padding-top: 1rem; font-size: 0.7rem;">
+                            — Por: Dr. Gene Amdahl, 1967
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: ESCALABILIDAD -->
+        <section class="slide" id="slide-6">
+            <div class="slide-frame">
+                <h2 class="headline-large ink-reveal" style="text-align: center;">ANUNCIO: SE BUSCA ESCALABILIDAD</h2>
+                <div class="columns">
+                    <div class="col-main" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div class="technical-box reveal" style="border-style: solid; border-width: 3px;">
+                            <h3 style="color: var(--accent);">Escalamiento VERTICAL</h3>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">"Comprar un servidor más grande."</p>
+                            <ul style="font-size: 0.7rem; margin-top: 1rem;">
+                                <li>+ RAM, + CPU</li>
+                                <li>Límite físico pronto</li>
+                                <li>Punto único de fallo</li>
+                            </ul>
+                        </div>
+                        <div class="technical-box reveal reveal-delay-1" style="border-style: solid; border-width: 3px;">
+                            <h3 style="color: var(--accent);">Escalamiento HORIZONTAL</h3>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">"Añadir más servidores pequeños."</p>
+                            <ul style="font-size: 0.7rem; margin-top: 1rem;">
+                                <li>Nodos infinitos</li>
+                                <li>Alta disponibilidad</li>
+                                <li>Requiere orquestación compleja</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-side">
+                        <div class="reveal" style="text-align: center; border: 2px solid var(--ink); padding: 1rem;">
+                            <span style="font-family: var(--font-display); font-weight: 900; font-size: 2rem;">CLASI-FICADOS</span>
+                            <p style="font-size: 0.8rem; margin-top: 1rem;">SE NECESITA: Ingeniero capaz de manejar <strong>Race Conditions</strong> y <strong>Deadlocks</strong>. Pago en cripto-tinta.</p>
+                        </div>
+
+                        <!-- IMAGEN -->
+                        <div class="photo-frame" style="margin-top: 2rem;">
+                            <img src="https://images.unsplash.com/photo-1558618047-3c8c76e6c8b3" alt="Escalamiento horizontal en servidores">
+                            <p class="caption">Escalamiento horizontal: el futuro de la computación masiva — Unsplash</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: EL FUTURO -->
+        <section class="slide" id="slide-7">
+            <div class="slide-frame">
+                <div class="masthead">
+                    <h1 class="reveal">EL MAÑANA DE LA COMPU-TACIÓN</h1>
+                </div>
+                <div class="columns">
+                    <div class="col-main">
+                        <h2 class="headline-med">Hacia la Computación Ubicua</h2>
+                        <p class="article-text reveal">
+                            El futuro no está en los centros de datos masivos, sino en el <strong>Edge Computing</strong>. Procesar los datos allí donde se generan: en tu reloj, en tu coche, en la farola de la esquina. La computación distribuida se vuelve invisible.
+                        </p>
+                        <div style="display: flex; gap: 2rem; margin-top: 2rem;" class="reveal reveal-delay-1">
+                            <div style="flex: 1;">
+                                <h4 style="font-family: var(--font-display);">Computación Cuántica</h4>
+                                <p style="font-size: 0.9rem;">El paralelismo definitivo a nivel de partículas.</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="font-family: var(--font-display);">IA Distribuida</h4>
+                                <p style="font-size: 0.9rem;">Modelos entrenados en millones de dispositivos móviles.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-side" style="display: flex; align-items: center; justify-content: center;">
+                        <!-- IMAGEN -->
+                        <div class="photo-frame" style="width: 100%; max-width: 320px;">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="Edge computing futurista">
+                            <p class="caption">Edge Computing: el mañana ya está aquí — Unsplash</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: CIERRE -->
+        <section class="slide" id="slide-8">
+            <div class="slide-frame" style="background: var(--ink); color: var(--bg-paper);">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
+                    <div class="reveal">
+                        <h1 style="font-family: var(--font-display); font-size: 5rem; letter-spacing: 0.2em;">FIN DE LA EDICIÓN</h1>
+                        <div style="width: 100px; height: 4px; background: var(--accent); margin: 2rem auto;"></div>
+                        <p class="article-text" style="text-align: center;">Gracias por leer El Heraldo de la Computación.</p>
+                        <p style="font-family: var(--font-mono); margin-top: 2rem; font-size: 0.8rem;">SUSCRÍBETE PARA MÁS CONTENIDO TÉCNICO</p>
+                    </div>
+                    <div class="reveal reveal-delay-2" style="margin-top: 4rem;">
+                        <svg class="svg-icon" style="fill: var(--bg-paper);" viewBox="0 0 24 24">
+                            <path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        /* === SLIDE PRESENTATION CONTROLLER === */
+        class SlidePresentation {
+            constructor() {
+                this.container = document.getElementById('container');
+                this.slides = document.querySelectorAll('.slide');
+                this.dotsContainer = document.getElementById('navDots');
+                this.currentIndex = 0;
+                
+                this.init();
+            }
+
+            init() {
+                // Setup dots
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                    dot.addEventListener('click', () => this.scrollToSlide(i));
+                    this.dotsContainer.appendChild(dot);
+                });
+
+                // Intersection Observer for reveal animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.updateDots(entry.target.id.split('-')[1]);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+
+                // Keyboard Nav
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+                        this.navigate(1);
+                    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                        this.navigate(-1);
+                    }
+                });
+            }
+
+            navigate(direction) {
+                const nextIndex = Math.min(Math.max(this.currentIndex + direction, 0), this.slides.length - 1);
+                this.scrollToSlide(nextIndex);
+            }
+
+            scrollToSlide(index) {
+                this.currentIndex = index;
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+            }
+
+            updateDots(index) {
+                this.currentIndex = parseInt(index);
+                const dots = document.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentIndex);
+                });
+            }
+        }
+
+        // Initialize presentation
+        window.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+    </script>
+</body>
+</html>
