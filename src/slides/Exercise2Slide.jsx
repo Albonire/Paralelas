@@ -51,7 +51,7 @@ const Exercise2Slide = ({ 'data-index': dataIndex }) => {
                 <td style={{ padding: '0.5rem' }}>5.00x</td>
               </tr>
               <tr>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>12</td>
+                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>16</td>
                 <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>49</td>
                 <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>6.02x</td>
               </tr>
@@ -62,11 +62,11 @@ const Exercise2Slide = ({ 'data-index': dataIndex }) => {
 
         <div className="col-side" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <p className="article-text" style={{ fontSize: '1.05rem', fontStyle: 'italic', borderLeft: '3px solid var(--ink)', paddingLeft: '1rem' }}>
-            A medida que añadí núcleos lógicos para la ejecución, el tiempo decrece, pero el Speedup dictado por mi procesador <strong style={{fontWeight:'bold'}}>no creció de forma estrictamente lineal</strong>. Esto evidencia la existencia de un cuello de botella. Al final, con los 12 núcleos de mi máquina, pasé de 295 ms a 49 ms, obteniendo mi tiempo récord.
+            A medida que añadí núcleos lógicos para la ejecución, el tiempo decrece, pero el Speedup dictado por mi procesador <strong style={{fontWeight:'bold'}}>no creció de forma estrictamente lineal</strong>. Esto evidencia la existencia de un cuello de botella. Al final, con los 16 núcleos de mi máquina, pasé de 295 ms a 49 ms, obteniendo mi tiempo récord.
           </p>
           
           <figure style={{ width: '100%', margin: '2rem 0 0 0' }}>
-            <img src="/Ejercicio 2.png" alt="Captura Ejecución 12 Hilos" style={{ width: '100%', border: '1px solid var(--ink)' }} />
+            <img src="/Ejercicio 2.png" alt="Captura Ejecución 16 Hilos" style={{ width: '100%', border: '1px solid var(--ink)' }} />
             <figcaption style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', marginTop: '0.5rem', borderTop: '1px solid var(--ink)', paddingTop: '0.5rem' }}>
               <strong>Fig 2.</strong> Salida real capturada en mi computador evidenciando los tiempos por iteración.
             </figcaption>

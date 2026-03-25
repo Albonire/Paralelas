@@ -23,7 +23,7 @@ const Exercise5Slide = ({ 'data-index': dataIndex }) => {
               A partir de los <strong>6 y 8 núcleos</strong>, la curva ideal continúa descendiendo de forma más pronunciada, separándose de la realidad empírica de mi procesador.
             </li>
             <li style={{ marginBottom: '0.8rem' }}>
-              A los <strong>12 núcleos</strong> la diferencia es palpable: existe un "overhead" real en mi máquina (cambios de contexto, fallos de caché, sincronización del bus de sistema) que impide que el hardware opere al mismo nivel de perfección que el modelo matemático puro.
+              A los <strong>16 núcleos</strong> la diferencia es palpable: existe un "overhead" real en mi máquina (cambios de contexto, fallos de caché, sincronización del bus de sistema) que impide que el hardware opere al mismo nivel de perfección que el modelo matemático puro.
             </li>
           </ul>
 

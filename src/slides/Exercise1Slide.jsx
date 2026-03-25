@@ -29,7 +29,7 @@ const Exercise1Slide = ({ 'data-index': dataIndex }) => {
               </tr>
               <tr style={{ borderBottom: '1px dotted var(--ink)' }}>
                 <td style={{ padding: '0.5rem' }}>Cores por Socket</td>
-                <td style={{ padding: '0.5rem' }}>6</td>
+                <td style={{ padding: '0.5rem' }}>8</td>
               </tr>
               <tr style={{ borderBottom: '1px dotted var(--ink)' }}>
                 <td style={{ padding: '0.5rem' }}>Hilos por Core</td>
@@ -37,13 +37,13 @@ const Exercise1Slide = ({ 'data-index': dataIndex }) => {
               </tr>
               <tr>
                 <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>Núcleos Lógicos (Total)</td>
-                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>12</td>
+                <td style={{ padding: '0.5rem', fontWeight: 'bold' }}>16</td>
               </tr>
             </tbody>
           </table>
 
           <p className="article-text">
-            Esta configuración indica que <strong>mi computador</strong> cuenta con un único procesador físico dotado de 6 núcleos reales. Gracias a la tecnología de hyper-threading, cada núcleo real puede manejar 2 hilos simultáneamente, arrojando un total de 12 núcleos lógicos. A efectos de la ejecución del algoritmo de paralelización posterior, dispuse de <strong style={{fontStyle: 'italic'}}>p = 12</strong> hilos de procesamiento de hardware en mi máquina.
+            Esta configuración indica que <strong>mi computador</strong> cuenta con un único procesador físico dotado de 8 núcleos reales. Gracias a la tecnología de hyper-threading, cada núcleo real puede manejar 2 hilos simultáneamente, arrojando un total de 16 núcleos lógicos. A efectos de la ejecución del algoritmo de paralelización posterior, dispuse de <strong style={{fontStyle: 'italic'}}>p = 16</strong> hilos de procesamiento de hardware en mi máquina.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ const Exercise1Slide = ({ 'data-index': dataIndex }) => {
             {/* Se elimina el filtro para mantener el color original como se solicitó */}
             <img src="/Ejericicio1.png" alt="Captura de lscpu" style={{ width: '100%', border: '1px solid var(--ink)' }} />
             <figcaption style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', marginTop: '0.5rem', borderTop: '1px solid var(--ink)', paddingTop: '0.5rem' }}>
-              <strong>Fig 1.</strong> Salida por consola revelando la topología de la CPU de mi computador (1 Socket, 6 Cores, 12 Threads).
+              <strong>Fig 1.</strong> Salida por consola revelando la topología de la CPU de mi computador (1 Socket, 8 Cores, 16 Threads).
             </figcaption>
           </figure>
         </div>

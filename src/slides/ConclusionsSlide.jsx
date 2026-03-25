@@ -18,13 +18,13 @@ const ConclusionsSlide = ({ 'data-index': dataIndex }) => {
                 <strong>Diagnóstico Preciso:</strong> La Ley de Amdahl demostró ser una herramienta altamente precisa para diagnosticar cuellos de botella y evaluar la eficiencia de algoritmos paralelos ejecutados en hardware real.
               </li>
               <li style={{ marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px dotted var(--ink)' }}>
-                <strong>Rendimientos Decrecientes:</strong> Comprobamos empíricamente que el crecimiento en núcleos (recursos de hardware) sufre de rendimientos decrecientes; pasar de 1 a 2 núcleos casi duplicó la velocidad, pero pasar de 8 a 12 núcleos lógicos solo mejoró el tiempo marginalmente.
+                <strong>Rendimientos Decrecientes:</strong> Comprobamos empíricamente que el crecimiento en núcleos (recursos de hardware) sufre de rendimientos decrecientes; pasar de 1 a 2 núcleos casi duplicó la velocidad, pero pasar de 8 a 16 núcleos lógicos solo mejoró el tiempo marginalmente.
               </li>
               <li style={{ marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px dotted var(--ink)' }}>
-                <strong>La Barrera del 9%:</strong> El <strong>9.04%</strong> de fracción serial (compuesto por el overhead, la gestión del sistema operativo y la sección inherentemente secuencial del algoritmo) dicta el techo infranqueable del sistema, estableciendo un <em>Speedup Máximo</em> matemático de <strong>11.06x</strong>.
+                <strong>La Barrera del 9%:</strong> El <strong>11.05%</strong> de fracción serial (compuesto por el overhead, la gestión del sistema operativo y la sección inherentemente secuencial del algoritmo) dicta el techo infranqueable del sistema, estableciendo un <em>Speedup Máximo</em> matemático de <strong>9.05x</strong>.
               </li>
               <li style={{ marginBottom: '1.5rem' }}>
-                <strong>Limitaciones del Hyper-Threading:</strong> Los núcleos lógicos simulados mediante "Hyper-threading" ofrecen beneficios tangibles de rendimiento, pero no deben confundirse ni igualarse con la potencia de los núcleos físicos reales. El <em>overhead</em> en la contención y gestión de los hilos se hace severamente evidente al tratar de saturar los 12 núcleos del sistema.
+                <strong>Limitaciones del Hyper-Threading:</strong> Los núcleos lógicos simulados mediante "Hyper-threading" ofrecen beneficios tangibles de rendimiento, pero no deben confundirse ni igualarse con la potencia de los núcleos físicos reales. El <em>overhead</em> en la contención y gestión de los hilos se hace severamente evidente al tratar de saturar los 16 núcleos del sistema.
               </li>
             </ol>
           </Reveal>
