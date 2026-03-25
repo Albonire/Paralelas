@@ -6,7 +6,7 @@ const ConclusionsSlide = ({ 'data-index': dataIndex }) => {
   return (
     <Slide className="slide-content" data-index={dataIndex}>
       <Reveal as="h2" className="headline-large" style={{ fontSize: '3rem', borderBottom: '2px solid var(--ink)', paddingBottom: '1rem', marginBottom: '2rem' }}>
-        Conclusiones del Estudio
+        Conclusiones con mi Máquina
       </Reveal>
       
       <div className="columns" style={{ marginTop: '1.5rem', height: 'calc(100% - 7rem)', overflowY: 'auto' }}>

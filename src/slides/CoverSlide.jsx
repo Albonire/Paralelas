@@ -25,7 +25,7 @@ const CoverSlide = ({ 'data-index': dataIndex }) => {
             </Reveal>
             
             <Reveal delay={0.2} as="div" style={{ fontSize: '1.1rem', lineHeight: '1.5' }}>
-              <p style={{ marginBottom: '0.8rem' }}><strong>Materia:</strong> Computación Masiva</p>
+              <p style={{ marginBottom: '0.8rem' }}><strong>Materia:</strong> Fundamentos de computación paralela y distribuida</p>
               <p style={{ marginBottom: '0.8rem' }}><strong>Universidad:</strong> Universidad de Pamplona</p>
               <p style={{ marginBottom: '0.8rem' }}><strong>Programa:</strong> Ingeniería de Sistemas</p>
               
